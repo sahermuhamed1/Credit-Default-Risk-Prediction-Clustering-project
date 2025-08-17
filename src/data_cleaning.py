@@ -1,7 +1,6 @@
-
 import pandas as pd
 
-def load_data(filepath='data/my_dataset.csv'):
+def load_data(filepath='data/UCI_Credit_Card.csv'):
     """
     Loads the dataset from the specified filepath.
     """
@@ -28,15 +27,17 @@ def select_relevant_columns(df):
     """
     Selects and reorders relevant columns, placing the target at the end.
     """
-    base_cols = ["id", "limit_bal", "sex", "education", "marriage", "age"]
-    pay_cols = ['status_sep', 'status_aug', 'status_jul', 'status_june', 'status_may', 'status_apr']
-    bill_cols = ['debt_sep', 'debt_aug', 'debt_jul', 'debt_june', 'debt_may', 'debt_apr']
-    pay_amt_cols = ['pay_sep', 'pay_aug', 'pay_jul', 'pay_june', 'pay_may', 'pay_apr']
+    base_cols = ["id","limit_bal","sex","education","marriage","age"]
+    pay_cols = ['status_sep','status_aug', 'status_jul', 'status_june', 'status_may', 'status_apr']
+    bill_cols = ['debt_sep','debt_aug', 'debt_jul', 'debt_june', 'debt_may', 'debt_apr']
+    pay_amt_cols = ['pay_sep','pay_aug', 'pay_jul', 'pay_june', 'pay_may', 'pay_apr']
     target_col = ["default_payment"]
 
+    # Ensure 'id' and 'default_payment' are correctly handled as per training.
+    # For now, we keep 'id' here, and it will be dropped in model.py's prepare_data_for_model for X,
+    # but the Flask input form requires it for passing.
     df = df[base_cols + pay_cols + bill_cols + pay_amt_cols + target_col]
     
-    # Reorder target to the end if it's not already
     current_cols = df.columns.tolist()
     if 'default_payment' in current_cols:
         current_cols.remove('default_payment')
@@ -44,7 +45,7 @@ def select_relevant_columns(df):
     
     return df
 
-def preprocess_data(filepath='data/my_dataset.csv'):
+def preprocess_data(filepath='data/UCI_Credit_Card.csv'):
     """
     Combines data loading and initial cleaning steps.
     """
@@ -54,7 +55,6 @@ def preprocess_data(filepath='data/my_dataset.csv'):
     return df
 
 if __name__ == '__main__':
-    # Example usage:
     df = preprocess_data()
     print("Cleaned data head:")
     print(df.head())

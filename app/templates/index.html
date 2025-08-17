@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Default Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f0f2f5; /* Light gray background */
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50; /* Dark blue-gray */
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        h2 {
+            font-size: 1.4em;
+            margin-top: 30px;
+            color: #34495e;
+        }
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusted for better spacing */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.95em;
+        }
+        input[type="text"], 
+        input[type="number"] {
+            width: calc(100% - 20px); /* Adjust padding */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus, 
+        input[type="number"]:focus {
+            border-color: #007bff; /* Highlight on focus */
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+        button {
+            grid-column: 1 / -1; /* Span all columns */
+            padding: 12px 25px;
+            background-color: #28a745; /* Green for action */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .result, .error {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .result {
+            background-color: #d4edda; /* Light green for success */
+            border: 1px solid #28a745;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da; /* Light red for error */
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Credit Default Prediction</h1>
+
+        <form action="/predict" method="post">
+            <h2>Client Basic Information:</h2>
+            <div class="form-group">
+                <label for="id">Client ID:</label>
+                <input type="number" id="id" name="id" value="1" required>
+            </div>
+            <div class="form-group">
+                <label for="limit_bal">Credit Limit (NT$):</label>
+                <input type="number" id="limit_bal" name="limit_bal" value="120000" required>
+            </div>
+            <div class="form-group">
+                <label for="sex">Gender (1=Male, 2=Female):</label>
+                <input type="number" id="sex" name="sex" value="2" min="1" max="2" required>
+            </div>
+            <div class="form-group">
+                <label for="education">Education (1=Grad School, 2=Uni, 3=HS, 4=Other):</label>
+                <input type="number" id="education" name="education" value="2" min="0" max="6" required>
+            </div>
+            <div class="form-group">
+                <label for="marriage">Marital Status (1=Married, 2=Single, 3=Other):</label>
+                <input type="number" id="marriage" name="marriage" value="1" min="0" max="3" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age (Years):</label>
+                <input type="number" id="age" name="age" value="24" min="18" max="100" required>
+            </div>
+
+            <h2>Repayment Status (Last 6 Months, -1=pay duly, 1=delay 1 month, etc.):</h2>
+            <div class="form-group">
+                <label for="status_sep">September:</label>
+                <input type="number" id="status_sep" name="status_sep" value="2" required>
+            </div>
+            <div class="form-group">
+                <label for="status_aug">August:</label>
+                <input type="number" id="status_aug" name="status_aug" value="2" required>
+            </div>
+            <div class="form-group">
+                <label for="status_jul">July:</label>
+                <input type="number" id="status_jul" name="status_jul" value="-1" required>
+            </div>
+            <div class="form-group">
+                <label for="status_june">June:</label>
+                <input type="number" id="status_june" name="status_june" value="-1" required>
+            </div>
+            <div class="form-group">
+                <label for="status_may">May:</label>
+                <input type="number" id="status_may" name="status_may" value="-2" required>
+            </div>
+            <div class="form-group">
+                <label for="status_apr">April:</label>
+                <input type="number" id="status_apr" name="status_apr" value="-2" required>
+            </div>
+
+            <h2>Bill Amounts (NT$ - Last 6 Months):</h2>
+            <div class="form-group">
+                <label for="debt_sep">September:</label>
+                <input type="number" id="debt_sep" name="debt_sep" value="3913" required>
+            </div>
+            <div class="form-group">
+                <label for="debt_aug">August:</label>
+                <input type="number" id="debt_aug" name="debt_aug" value="3102" required>
+            </div>
+            <div class="form-group">
+                <label for="debt_jul">July:</label>
+                <input type="number" id="debt_jul" name="debt_jul" value="689" required>
+            </div>
+            <div class="form-group">
+                <label for="debt_june">June:</label>
+                <input type="number" id="debt_june" name="debt_june" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="debt_may">May:</label>
+                <input type="number" id="debt_may" name="debt_may" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="debt_apr">April:</label>
+                <input type="number" id="debt_apr" name="debt_apr" value="0" required>
+            </div>
+
+            <h2>Payment Amounts (NT$ - Last 6 Months):</h2>
+            <div class="form-group">
+                <label for="pay_sep">September:</label>
+                <input type="number" id="pay_sep" name="pay_sep" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="pay_aug">August:</label>
+                <input type="number" id="pay_aug" name="pay_aug" value="689" required>
+            </div>
+            <div class="form-group">
+                <label for="pay_jul">July:</label>
+                <input type="number" id="pay_jul" name="pay_jul" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="pay_june">June:</label>
+                <input type="number" id="pay_june" name="pay_june" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="pay_may">May:</label>
+                <input type="number" id="pay_may" name="pay_may" value="0" required>
+            </div>
+            <div class="form-group">
+                <label for="pay_apr">April:</label>
+                <input type="number" id="pay_apr" name="pay_apr" value="0" required>
+            </div>
+
+            <button type="submit">Predict Default</button>
+        </form>
+
+        <!-- Prediction Result Display -->
+        {% if prediction %}
+            <div class="result">
+                <h3>Prediction Result:</h3>
+                <p>{{ prediction }}</p>
+                <p>{{ probability }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Error Message Display -->
+        {% if error %}
+            <div class="error">
+                <h3>Prediction Error:</h3>
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
