@@ -1,4 +1,6 @@
-# implementing a Credit Default Risk Prediction & Clustering project
+# Credit Default Risk Prediction & Customer Clustering
+
+This project implements a machine learning pipeline to predict credit default risk and includes modules for customer segmentation using clustering. The solution is modularized into a Python package structure and exposed via a Flask web application for real-time predictions.
 
 **Objective:**
 Build an end-to-end pipeline on the **UCI Credit Card Default dataset** to:
@@ -11,6 +13,34 @@ Build an end-to-end pipeline on the **UCI Credit Card Default dataset** to:
 * Evaluate with ROC AUC
 * Perform clustering (KMeans, DBSCAN) with PCA & t-SNE visualization
 * Deploy inference API with Flask
+
+---
+
+**Project Structure**
+```bash
+project/
+├── app/ # Flask web application
+│ ├── init.py # Flask app initialization
+│ ├── routes.py # Defines web routes (e.g., /predict)
+│ └── templates/ # HTML templates for the web interface
+│ └── index.html
+├── src/ # Core Python modules for data science workflow
+│ ├── data_cleaning.py # Handles initial data loading and cleaning
+│ ├── feature_engineering.py # Creates financial ratios and delay features
+│ ├── RFM.py # Implements Recency, Frequency, Monetary analysis
+│ ├── clustering.py # Contains logic for KMeans, DBSCAN, and PCA (for analysis)
+│ ├── model.py # Data splitting, SMOTE, scaling, model training (XGBoost), and saving artifacts
+│ └── pipeline.py # Orchestrates preprocessing for single predictions in Flask app
+├── data/ # Directory for the raw dataset
+│ └── my_dataset.csv # The input dataset (e.g., UCI Credit Card Dataset)
+├── models/ # Directory to store trained models and scalers
+│ ├── xgboost_model.pkl # Trained XGBoost classification model
+│ ├── robust_scaler.pkl # Fitted data scaler
+│ └── feature_names.pkl # List of feature names used during model training (important for consistent input)
+├── main.py # Script to run the full data processing and model training pipeline
+├── run.py # Script to start the Flask web application
+└── requirements.txt # List of Python dependencies
+```
 
 ---
 
@@ -82,8 +112,41 @@ Build an end-to-end pipeline on the **UCI Credit Card Default dataset** to:
 
 ---
 
- That’s the **MVP roadmap**: it touches **every required technique** while keeping it structured for deployment.
+**Create an Environment and Install Dependencies:**
+It's highly recommended to use a virtual environment to manage dependencies.
 
-Be prepared if I need anything from you ok, this project I do to prepare to my interview at banque misr so its important for making me revision to all statistics, ML, model evaluation before the interview
+```bash
+# Using conda
+conda create -n credit_pred_env python=3.9
+conda activate credit_pred_env
 
-don't give me the code or anything, If I need anything from you I'll ask. Just be prepared
+# Or using venv
+python -m venv venv_credit_pred
+source venv_credit_pred/bin/activate # On Windows: .\venv_credit_pred\Scripts\activate
+
+pip install -r requirements.txt
+```
+
+---
+
+**Train the Machine Learning Model:**
+
+Run the main.py script to perform data cleaning, feature engineering, RFM analysis, and train the XGBoost model. This will also save the trained model, scaler, and a list of feature names into the models/ directory.
+
+```Bash
+python main.py
+```
+*Important: Observe the terminal output during this step. Especially note the Features used for training/prediction: [...] line, as it confirms the exact features the model was trained on.*
+
+---
+**Start the Flask Web Application:**
+
+Once the model is trained and saved, you can start the Flask web application.
+
+```Bash
+python run.py
+```
+---
+
+**Contanct Information**
+For any questions or issues, please contact me at sahermuhamed176@gmail.com. I'll be happy to assist.
