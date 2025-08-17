@@ -1,4 +1,4 @@
-implementing a Credit Default Risk Prediction & Clustering project
+# implementing a Credit Default Risk Prediction & Clustering project
 
 **Objective:**
 Build an end-to-end pipeline on the **UCI Credit Card Default dataset** to:
